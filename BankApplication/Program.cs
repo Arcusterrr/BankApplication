@@ -22,7 +22,11 @@ namespace BankApplication
                 {
                     int command = Convert.ToInt32(Console.ReadLine());
 
-                    switch()
+                    switch (command)
+                    {
+                        case 1:
+                            
+                    }
                 }
 
             }
