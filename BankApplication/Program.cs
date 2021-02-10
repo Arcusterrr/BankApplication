@@ -26,10 +26,23 @@ namespace BankApplication
                     {
                         case 1:
                             
+                            
                     }
                 }
 
             }
+        
+            
+            public void OpenAccount(Bank<Account> bank)
+            {
+                Console.WriteLine("Укажите сумму для создания счета: ");
+
+                decimal sum = Convert.ToDecimal(Console.ReadLine());
+                Console.WriteLine("Выберите тип счета: 1. До востребования 2. Депозит");
+                AccountType accountType;
+
+            }
+
         }
     }
 }
