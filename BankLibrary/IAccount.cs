@@ -8,6 +8,6 @@ namespace BankLibrary
     {
         void Put(decimal sum);
 
-        void Withdraw(decimal sum);
+        decimal Withdraw(decimal sum);
     }
 }
