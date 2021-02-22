@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BankLibrary.Domain.Abstractions;
 
-namespace BankLibrary
+namespace BankLibrary.Domain
 {
     public class DemandAccount : Account
     {

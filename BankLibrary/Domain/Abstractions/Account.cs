@@ -1,6 +1,6 @@
-﻿namespace BankLibrary
+﻿namespace BankLibrary.Domain.Abstractions
 {
-    public abstract class Account : IAccount
+    public abstract class Account
     {
         protected internal event AccountStateHandler Withdrawed;
         protected internal event AccountStateHandler Added;
@@ -11,11 +11,9 @@
         private static int _counter;
         protected int Days;
 
-        #region свойства
         public decimal Sum { get; private set; }
         public int Percantage { get; private set; }
         public int Id { get; private set; }
-        #endregion
 
 
         protected Account(decimal sum, int percantage)

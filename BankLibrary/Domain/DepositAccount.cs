@@ -1,4 +1,6 @@
-﻿namespace BankLibrary
+﻿using BankLibrary.Domain.Abstractions;
+
+namespace BankLibrary.Domain
 {
     public class DepositAccount : Account
     {
