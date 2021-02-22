@@ -2,11 +2,16 @@
 using BankLibrary;
 using BankLibrary.Domain;
 using BankLibrary.Domain.Abstractions;
+using BankLibrary.Infrastructure.AccountStorage;
+using BankLibrary.UseCases;
 
 namespace BankApplication
 {
     class Program
     {
+        private static readonly IAccountStorage AccountStorage = new SimpleAccountStorage();
+        private static readonly OpenBankAccountUseCase OpenBankAccountUseCase = new OpenBankAccountUseCase(AccountStorage);
+        
         static void Main(string[] args)
         {
             var bank = new Bank<Account>("ЮнитБанк");
@@ -68,7 +73,14 @@ namespace BankApplication
 
                 var accountType = type == 2 ? AccountType.Deposit : AccountType.Ordinary;
 
-                bank.Open(accountType, sum, AddSumHandler, WithdrawSumHandler, (o, e) => Console.WriteLine(e.Message), CloseAccountHandler, OpenAccountHandler);
+                OpenBankAccountUseCase.Open(
+                    accountType, 
+                    sum, 
+                    AddSumHandler, 
+                    WithdrawSumHandler, 
+                    (o, e) => Console.WriteLine(e.Message), 
+                    CloseAccountHandler, 
+                    OpenAccountHandler);
             }
 
             static void Withdraw(Bank<Account> bank)

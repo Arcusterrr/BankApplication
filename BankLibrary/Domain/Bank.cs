@@ -18,48 +18,6 @@ namespace BankLibrary.Domain
         {
             Name = name;
         }
-        
-        public void Open(
-            AccountType accountType, 
-            decimal sum, 
-            AccountStateHandler addSumHandler, 
-            AccountStateHandler withdrawSumHandler,
-            AccountStateHandler calculationHandler, 
-            AccountStateHandler closeAccountHandler, 
-            AccountStateHandler openAccountHandler
-            )
-        {
-            var newAccount = accountType switch
-            {
-                AccountType.Ordinary => new DemandAccount(sum, 1) as T,
-                AccountType.Deposit => new DepositAccount(sum, 40) as T,
-                _ => null
-            };
-
-            if (newAccount == null)
-                throw new Exception("Ошибка создания счета");
-
-            if (_accounts == null)
-                _accounts = new T[] { newAccount };
-            else
-            {
-                var tempAccounts = new T[_accounts.Length + 1];
-                for(var i = 0; i < _accounts.Length; i++)
-                {
-                    tempAccounts[i] = _accounts[i];
-                }
-                tempAccounts[^1] = newAccount;
-                _accounts = tempAccounts;
-            }
-
-            newAccount.Added += addSumHandler;
-            newAccount.Withdrawed += withdrawSumHandler;
-            newAccount.Closed += closeAccountHandler;
-            newAccount.Opened += openAccountHandler;
-            newAccount.Calculated += calculationHandler;
-
-            newAccount.Open();
-        }
 
         public void Put(decimal sum, int id)
         {
