@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BankLibrary
+﻿namespace BankLibrary
 {
     public delegate void AccountStateHandler(object sender, AccountEventArgs e);
 
@@ -11,10 +7,10 @@ namespace BankLibrary
         public string Message { get; private set; }
         public decimal Sum { get; private set; }
 
-        public AccountEventArgs(string _message, decimal _sum)
+        public AccountEventArgs(string message, decimal sum)
         {
-            Message = _message;
-            Sum = _sum;
+            Message = message;
+            Sum = sum;
         }
     }
 }

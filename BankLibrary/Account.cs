@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BankLibrary
+﻿namespace BankLibrary
 {
     public abstract class Account : IAccount
     {
@@ -12,8 +8,8 @@ namespace BankLibrary
         protected internal event AccountStateHandler Closed;
         protected internal event AccountStateHandler Calculated;
 
-        static int counter = 0;
-        protected int _days = 0;
+        private static int _counter;
+        protected int Days;
 
         #region свойства
         public decimal Sum { get; private set; }
@@ -22,11 +18,11 @@ namespace BankLibrary
         #endregion
 
 
-        public Account(decimal _sum, int _percantage)
+        protected Account(decimal sum, int percantage)
         {
-            Sum = _sum;
-            Percantage = _percantage;
-            Id = ++counter;
+            Sum = sum;
+            Percantage = percantage;
+            Id = ++_counter;
         }
 
         private void CallEvent(AccountEventArgs e, AccountStateHandler handler)
@@ -96,15 +92,14 @@ namespace BankLibrary
 
         protected internal void IncrementDays()
         {
-            _days++;
+            Days++;
         }
 
         protected internal virtual void Calculate()
         {
-            decimal increment = Sum * Percantage / 100;
-            Sum = Sum + increment;
+            var increment = Sum * Percantage / 100;
+            Sum += increment;
             OnCalculated(new AccountEventArgs($"На счет зачислены проценты в размере: {increment}", Sum));
         }
-
     }
 }

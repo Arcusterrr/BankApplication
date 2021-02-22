@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BankLibrary
+﻿namespace BankLibrary
 {
     public class DepositAccount : Account
     {
-        public DepositAccount(decimal _sum, int percantage): base( _sum, percantage)
+        public DepositAccount(decimal sum, int percantage): base( sum, percantage)
         {
         }
 
         protected internal override void Open()
         {
-            base.OnOpened(new AccountEventArgs($"Открыт новый депозитный счет! Id счета: {this.Id}", this.Sum));
+            base.OnOpened(new AccountEventArgs($"Открыт новый депозитный счет! Id счета: {Id}", Sum));
         }
 
         public override void Put(decimal sum)
         {
-            if (_days % 30 == 0)
+            if (Days % 30 == 0)
             {
                 base.Put(sum);
             }
@@ -29,7 +25,7 @@ namespace BankLibrary
 
         public override decimal Withdraw(decimal sum)
         {
-            if (_days % 30 == 0)
+            if (Days % 30 == 0)
                 return base.Withdraw(sum);
             else
                 base.onWithDrawed(new AccountEventArgs("Вывести средства можно только после 30ти дневного периода!", 0));
@@ -38,7 +34,7 @@ namespace BankLibrary
 
         protected internal override void Calculate()
         {
-            if(_days % 30 == 0)
+            if(Days % 30 == 0)
                 base.Calculate();
         }
     }

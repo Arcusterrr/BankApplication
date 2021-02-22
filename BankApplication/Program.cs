@@ -7,11 +7,11 @@ namespace BankApplication
     {
         static void Main(string[] args)
         {
-            Bank<Account> bank = new Bank<Account>("ЮнитБанк");
-            bool alive = true;
+            var bank = new Bank<Account>("ЮнитБанк");
+            var alive = true;
             while (alive)
             {
-                ConsoleColor color = Console.ForegroundColor;
+                var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine("1. Открыть счет \t 2. Вывести средства  \t 3. Добавить на счет");
                 Console.WriteLine("4. Закрыть счет \t 5. Пропустить день \t 6. Выйти из программы");
@@ -20,7 +20,7 @@ namespace BankApplication
 
                 try
                 {
-                    int command = Convert.ToInt32(Console.ReadLine());
+                    var command = Convert.ToInt32(Console.ReadLine());
 
                     switch (command)
                     {
@@ -59,16 +59,12 @@ namespace BankApplication
             {
                 Console.WriteLine("Укажите сумму для создания счета: ");
 
-                decimal sum = Convert.ToDecimal(Console.ReadLine());
+                var sum = Convert.ToDecimal(Console.ReadLine());
                 Console.WriteLine("Выберите тип счета: 1. До востребования 2. Депозит");
-                AccountType accountType;
 
-                int type = Convert.ToInt32(Console.ReadLine());
+                var type = Convert.ToInt32(Console.ReadLine());
 
-                if (type == 2)
-                    accountType = AccountType.Deposit;
-                else
-                    accountType = AccountType.Ordinary;
+                var accountType = type == 2 ? AccountType.Deposit : AccountType.Ordinary;
 
                 bank.Open(accountType, sum, AddSumHandler, WithdrawSumHandler, (o, e) => Console.WriteLine(e.Message), CloseAccountHandler, OpenAccountHandler);
             }
@@ -77,9 +73,9 @@ namespace BankApplication
             {
                 Console.WriteLine("Укажите сумму для снятия со счета:");
 
-                decimal sum = Convert.ToDecimal(Console.ReadLine());
+                var sum = Convert.ToDecimal(Console.ReadLine());
                 Console.WriteLine("Введите Id счета: ");
-                int id = Convert.ToInt32(Console.ReadLine());
+                var id = Convert.ToInt32(Console.ReadLine());
 
                 bank.Withdraw(sum, id);
             }
@@ -88,9 +84,9 @@ namespace BankApplication
             {
                 Console.WriteLine("Укажите сумму, чтобы положить на счет:");
 
-                decimal sum = Convert.ToDecimal(Console.ReadLine());
+                var sum = Convert.ToDecimal(Console.ReadLine());
                 Console.WriteLine("Укажите Id счета: ");
-                int id = Convert.ToInt32(Console.ReadLine());
+                var id = Convert.ToInt32(Console.ReadLine());
 
                 bank.Put(sum, id);
             }
@@ -98,7 +94,7 @@ namespace BankApplication
             static void CloseAccount(Bank<Account> bank)
             {
                 Console.WriteLine("Укажите Id счета, который хотите закрыть: ");
-                int id = Convert.ToInt32(Console.ReadLine());
+                var id = Convert.ToInt32(Console.ReadLine());
 
                 bank.Close(id);
             }

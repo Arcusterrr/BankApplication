@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BankLibrary
 {
@@ -11,13 +9,13 @@ namespace BankLibrary
     }
     public class Bank<T> where T : Account
     {
-        T[] accounts;
+        private T[] _accounts;
 
         public string Name { get; private set; }
 
-        public Bank(string _name)
+        public Bank(string name)
         {
-            this.Name = _name;
+            Name = name;
         }
         
         public void Open(
@@ -30,32 +28,27 @@ namespace BankLibrary
             AccountStateHandler openAccountHandler
             )
         {
-            T newAccount = null;
-
-            switch (accountType)
+            var newAccount = accountType switch
             {
-                case AccountType.Ordinary:
-                    newAccount = new DemandAccount(sum, 1) as T;
-                    break;
-                case AccountType.Deposit:
-                    newAccount = new DepositAccount(sum, 40) as T;
-                    break;
-            }
+                AccountType.Ordinary => new DemandAccount(sum, 1) as T,
+                AccountType.Deposit => new DepositAccount(sum, 40) as T,
+                _ => null
+            };
 
             if (newAccount == null)
                 throw new Exception("Ошибка создания счета");
 
-            if (accounts == null)
-                accounts = new T[] { newAccount };
+            if (_accounts == null)
+                _accounts = new T[] { newAccount };
             else
             {
-                T[] tempAccounts = new T[accounts.Length + 1];
-                for(int i = 0; i < accounts.Length; i++)
+                var tempAccounts = new T[_accounts.Length + 1];
+                for(var i = 0; i < _accounts.Length; i++)
                 {
-                    tempAccounts[i] = accounts[i];
+                    tempAccounts[i] = _accounts[i];
                 }
-                tempAccounts[tempAccounts.Length - 1] = newAccount;
-                accounts = tempAccounts;
+                tempAccounts[^1] = newAccount;
+                _accounts = tempAccounts;
             }
 
             newAccount.Added += addSumHandler;
@@ -69,7 +62,7 @@ namespace BankLibrary
 
         public void Put(decimal sum, int id)
         {
-            T account = FindAccount(id);
+            var account = FindAccount(id);
             if (account == null)
                 throw new Exception("Счет не найден");
             account.Put(sum);
@@ -77,7 +70,7 @@ namespace BankLibrary
 
         public void Withdraw(decimal sum, int id)
         {
-            T account = FindAccount(id);
+            var account = FindAccount(id);
             if (account == null)
                 throw new Exception("Счет не найден");
             account.Withdraw(sum);
@@ -85,62 +78,60 @@ namespace BankLibrary
 
         public void Close(int id)
         {
-            int index;
-            T account = FindAccount(id, out index);
+            var account = FindAccount(id, out var index);
             if (account == null)
                 throw new Exception("Счет не найден");
 
             account.Close();
 
-            if(accounts.Length <= 1)
+            if(_accounts.Length <= 1)
             {
-                accounts = null;
+                _accounts = null;
             }
             else
             {
-                T[] tempAccounts = new T[accounts.Length - 1];
-                for(int i = 0, j = 0; i < accounts.Length; i++)
+                var tempAccounts = new T[_accounts.Length - 1];
+                for(int i = 0, j = 0; i < _accounts.Length; i++)
                 {
                     if (i != index)
-                        tempAccounts[j++] = accounts[i];
+                        tempAccounts[j++] = _accounts[i];
                 }
-                accounts = tempAccounts;
+                _accounts = tempAccounts;
             }
         }
 
         public void CalculatePercantage()
         {
-            if(accounts == null)
+            if(_accounts == null)
             {
                 return;
             }
-            for(int i = 0; i < accounts.Length; i++)
+
+            foreach (var t in _accounts)
             {
-                accounts[i].IncrementDays();
-                accounts[i].Calculate();
+                t.IncrementDays();
+                t.Calculate();
             }
         }
 
         public T FindAccount(int id)
         {
-            for(int i = 0; i < accounts.Length; i++)
+            for(int i = 0; i < _accounts.Length; i++)
             {
-                if(accounts[i].Id == id)
+                if(_accounts[i].Id == id)
                 {
-                    return accounts[i];
+                    return _accounts[i];
                 }
             }
             return null;
         }
         public T FindAccount(int id, out int index)
         {
-            for(int i = 0; i < accounts.Length; i++)
+            for(var i = 0; i < _accounts.Length; i++)
             {
-                if(accounts[i].Id == id)
-                {
-                    index = i;
-                    return accounts[i];
-                }
+                if (_accounts[i].Id != id) continue;
+                index = i;
+                return _accounts[i];
             }
             index = -1;
             return null;
