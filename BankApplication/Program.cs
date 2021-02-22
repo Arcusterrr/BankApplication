@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BankLibrary;
 using BankLibrary.Domain;
 using BankLibrary.Infrastructure.AccountStorage;
+using BankLibrary.Infrastructure.Output;
 using BankLibrary.UseCases.BankCases;
 
 namespace BankApplication
@@ -14,12 +14,13 @@ namespace BankApplication
         {
             new Bank("ЮнитБанк")
         };
+        private static readonly IOutput Output = new ConsoleOutput();
         
         private static readonly IAccountStorage AccountStorage = new SimpleAccountStorage(StartBanks);
-        private static readonly OpenBankAccountUseCase OpenBankAccountUseCase = new OpenBankAccountUseCase(AccountStorage);
-        private static readonly CloseBankAccountUseCase CloseBankAccountUseCase = new CloseBankAccountUseCase(AccountStorage);
-        private static readonly BankPutUseCase BankPutUseCase = new BankPutUseCase(AccountStorage);
-        private static readonly BankWithdrawUseCase BankWithdrawCase = new BankWithdrawUseCase(AccountStorage);
+        private static readonly OpenBankAccountUseCase OpenBankAccountUseCase = new OpenBankAccountUseCase(AccountStorage, Output);
+        private static readonly CloseBankAccountUseCase CloseBankAccountUseCase = new CloseBankAccountUseCase(AccountStorage, Output);
+        private static readonly BankPutUseCase BankPutUseCase = new BankPutUseCase(AccountStorage, Output);
+        private static readonly BankWithdrawUseCase BankWithdrawCase = new BankWithdrawUseCase(AccountStorage, Output);
         
         static void Main(string[] args)
         {
@@ -67,87 +68,52 @@ namespace BankApplication
                     Console.WriteLine(ex.Message);
                     Console.ForegroundColor = color;
                 }
-
             }
         
-            
             void OpenAccount(Bank bank)
             {
-                Console.WriteLine("Укажите сумму для создания счета: ");
-
-                var sum = Convert.ToDecimal(Console.ReadLine());
-                Console.WriteLine("Выберите тип счета: 1. До востребования 2. Депозит");
-
-                var type = Convert.ToInt32(Console.ReadLine());
+                var sum = GetDecimalInput("Укажите сумму для создания счета: ");
+                var type = GetIntInput("Выберите тип счета: 1. До востребования 2. Депозит");
 
                 var accountType = type == 2 ? AccountType.Deposit : AccountType.Ordinary;
 
-                OpenBankAccountUseCase.Open(
-                    bank,
-                    accountType, 
-                    sum, 
-                    AddSumHandler, 
-                    WithdrawSumHandler, 
-                    (o, e) => Console.WriteLine(e.Message), 
-                    CloseAccountHandler, 
-                    OpenAccountHandler
-                );
+                OpenBankAccountUseCase.Open(bank, accountType, sum);
             }
 
             static void Withdraw(Bank bank)
             {
-                Console.WriteLine("Укажите сумму для снятия со счета:");
-
-                var sum = Convert.ToDecimal(Console.ReadLine());
-                Console.WriteLine("Введите Id счета: ");
-                var id = Convert.ToInt32(Console.ReadLine());
+                var sum = GetDecimalInput("Укажите сумму для снятия со счета:");
+                var id = GetIntInput("Введите Id счета: ");
 
                 BankWithdrawCase.Withdraw(bank, sum, id);
             }
 
             static void Put(Bank bank)
             {
-                Console.WriteLine("Укажите сумму, чтобы положить на счет:");
-
-                var sum = Convert.ToDecimal(Console.ReadLine());
-                Console.WriteLine("Укажите Id счета: ");
-                var id = Convert.ToInt32(Console.ReadLine());
+                var sum = GetDecimalInput("Укажите сумму, чтобы положить на счет:");
+                var id = GetIntInput("Укажите Id счета: ");
 
                 BankPutUseCase.Put(bank, sum, id);
             }
 
             static void CloseAccount(Bank bank)
             {
-                Console.WriteLine("Укажите Id счета, который хотите закрыть: ");
-                var id = Convert.ToInt32(Console.ReadLine());
+                var id = GetIntInput("Укажите Id счета, который хотите закрыть: ");
 
                 CloseBankAccountUseCase.Close(bank, id);
             }
+        }
 
-            #region Обработчики событий
-            static void OpenAccountHandler(object sender, AccountEventArgs e)
-            {
-                Console.WriteLine(e.Message);
-            }
+        private static decimal GetDecimalInput(string message)
+        {
+            Console.WriteLine(message);
+            return Convert.ToDecimal(Console.ReadLine());
+        }
 
-            static void AddSumHandler(object sender, AccountEventArgs e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            static void WithdrawSumHandler(object sender, AccountEventArgs e)
-            {
-                Console.WriteLine(e.Message);
-                if (e.Sum > 0)
-                    Console.WriteLine("Идем тратить деньги");
-            }
-
-            static void CloseAccountHandler(object sender, AccountEventArgs e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            #endregion
-
+        private static int GetIntInput(string message)
+        {
+            Console.WriteLine(message);
+            return Convert.ToInt32(Console.ReadLine());
         }
     }
 }

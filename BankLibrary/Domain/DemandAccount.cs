@@ -4,14 +4,12 @@ namespace BankLibrary.Domain
 {
     public class DemandAccount : Account
     {
-        public DemandAccount(decimal sum, int percantage) : base(sum, percantage)
-        {
+        public DemandAccount(decimal sum, int percantage) 
+            : base(sum, percantage) { }
 
-        }
 
-        protected internal override void Open()
-        {
-            base.OnOpened(new AccountEventArgs($"Открыт новый счет до востребования! Id счета: {this.Id}", this.Sum));
-        }
+        public override string OpenText => $"Открыт новый счет до востребования! Id счета: {Id}";
+        public override string? ValidateWithdraw(decimal sum) => Sum < sum ? $"На счету {Id} недостаточно средств" : null;
+        
     }
 }

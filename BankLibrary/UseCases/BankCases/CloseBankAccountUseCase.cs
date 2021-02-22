@@ -1,16 +1,19 @@
 ﻿using System;
 using BankLibrary.Domain;
 using BankLibrary.Infrastructure.AccountStorage;
+using BankLibrary.Infrastructure.Output;
 
 namespace BankLibrary.UseCases.BankCases
 {
     public class CloseBankAccountUseCase
     {
         private readonly IAccountStorage _accountStorage;
+        private readonly IOutput _output;
 
-        public CloseBankAccountUseCase(IAccountStorage accountStorage)
+        public CloseBankAccountUseCase(IAccountStorage accountStorage, IOutput output)
         {
             _accountStorage = accountStorage;
+            _output = output;
         }
 
         public void Close(Bank bank, int id)
@@ -19,7 +22,7 @@ namespace BankLibrary.UseCases.BankCases
             if (account == null)
                 throw new ArgumentNullException(nameof(account));
 
-            account.Close();
+            _output.OutputMessage($"Счет {account.Id} закрыт. Итоговая сумма: {account.Sum}");
 
             _accountStorage.Remove(bank, account);
         }
