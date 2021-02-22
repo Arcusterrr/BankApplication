@@ -35,30 +35,6 @@ namespace BankLibrary.Domain
             account.Withdraw(sum);
         }
 
-        public void Close(int id)
-        {
-            var account = FindAccount(id, out var index);
-            if (account == null)
-                throw new Exception("Счет не найден");
-
-            account.Close();
-
-            if(_accounts.Length <= 1)
-            {
-                _accounts = null;
-            }
-            else
-            {
-                var tempAccounts = new T[_accounts.Length - 1];
-                for(int i = 0, j = 0; i < _accounts.Length; i++)
-                {
-                    if (i != index)
-                        tempAccounts[j++] = _accounts[i];
-                }
-                _accounts = tempAccounts;
-            }
-        }
-
         public void CalculatePercantage()
         {
             if(_accounts == null)

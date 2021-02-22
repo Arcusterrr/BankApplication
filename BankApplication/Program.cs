@@ -11,6 +11,7 @@ namespace BankApplication
     {
         private static readonly IAccountStorage AccountStorage = new SimpleAccountStorage();
         private static readonly OpenBankAccountUseCase OpenBankAccountUseCase = new OpenBankAccountUseCase(AccountStorage);
+        private static readonly CloseBankAccountUseCase CloseBankAccountUseCase = new CloseBankAccountUseCase(AccountStorage);
         
         static void Main(string[] args)
         {
@@ -80,7 +81,8 @@ namespace BankApplication
                     WithdrawSumHandler, 
                     (o, e) => Console.WriteLine(e.Message), 
                     CloseAccountHandler, 
-                    OpenAccountHandler);
+                    OpenAccountHandler
+                );
             }
 
             static void Withdraw(Bank<Account> bank)
@@ -110,7 +112,7 @@ namespace BankApplication
                 Console.WriteLine("Укажите Id счета, который хотите закрыть: ");
                 var id = Convert.ToInt32(Console.ReadLine());
 
-                bank.Close(id);
+                CloseBankAccountUseCase.Close(id);
             }
 
             #region Обработчики событий

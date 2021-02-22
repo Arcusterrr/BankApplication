@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BankLibrary.Domain.Abstractions;
 
 namespace BankLibrary.Infrastructure.AccountStorage
 {
     public class SimpleAccountStorage: IAccountStorage
     {
-        private static List<Account> _accounts = new List<Account>();
+        private static readonly List<Account> Accounts = new List<Account>();
 
-        public void Add(Account account) => _accounts.Add(account);
+        public void Add(Account account) => Accounts.Add(account);
+        public Account? Get(int id) => Accounts.FirstOrDefault(x => x.Id == id);
+        public void Remove(Account account) => Accounts.Remove(account);
     }
 }
