@@ -3,7 +3,7 @@ using BankLibrary.Domain;
 using BankLibrary.Domain.Abstractions;
 using BankLibrary.Infrastructure.AccountStorage;
 
-namespace BankLibrary.UseCases
+namespace BankLibrary.UseCases.BankCases
 {
     public class OpenBankAccountUseCase
     {

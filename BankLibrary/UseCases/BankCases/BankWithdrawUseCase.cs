@@ -1,26 +1,24 @@
 ﻿using System;
 using BankLibrary.Infrastructure.AccountStorage;
 
-namespace BankLibrary.UseCases
+namespace BankLibrary.UseCases.BankCases
 {
-    public class CloseBankAccountUseCase
+    public class BankWithdrawUseCase
     {
         private readonly IAccountStorage _accountStorage;
 
-        public CloseBankAccountUseCase(IAccountStorage accountStorage)
+        public BankWithdrawUseCase(IAccountStorage accountStorage)
         {
             _accountStorage = accountStorage;
         }
 
-        public void Close(int id)
+        public void Withdraw(decimal sum, int id)
         {
             var account = _accountStorage.Get(id);
             if (account == null)
                 throw new ArgumentNullException(nameof(account));
-
-            account.Close();
-
-            _accountStorage.Remove(account);
+            
+            account.Withdraw(sum);
         }
     }
 }
