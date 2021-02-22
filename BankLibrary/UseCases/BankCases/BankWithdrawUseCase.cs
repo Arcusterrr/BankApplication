@@ -1,4 +1,5 @@
 ﻿using System;
+using BankLibrary.Domain;
 using BankLibrary.Infrastructure.AccountStorage;
 
 namespace BankLibrary.UseCases.BankCases
@@ -12,9 +13,9 @@ namespace BankLibrary.UseCases.BankCases
             _accountStorage = accountStorage;
         }
 
-        public void Withdraw(decimal sum, int id)
+        public void Withdraw(Bank bank, decimal sum, int id)
         {
-            var account = _accountStorage.Get(id);
+            var account = _accountStorage.Get(bank, id);
             if (account == null)
                 throw new ArgumentNullException(nameof(account));
             

@@ -15,6 +15,7 @@ namespace BankLibrary.UseCases.BankCases
         }
 
         public void Open(
+            Bank bank,
             AccountType accountType, 
             decimal sum, 
             AccountStateHandler addSumHandler, 
@@ -31,7 +32,7 @@ namespace BankLibrary.UseCases.BankCases
                 _ => throw new ArgumentOutOfRangeException(nameof(accountType))
             };
 
-            _accountStorage.Add(newAccount);
+            _accountStorage.Add(bank, newAccount);
 
             newAccount.Added += addSumHandler;
             newAccount.Withdrawed += withdrawSumHandler;

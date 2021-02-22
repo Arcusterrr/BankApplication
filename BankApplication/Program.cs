@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BankLibrary;
 using BankLibrary.Domain;
 using BankLibrary.Infrastructure.AccountStorage;
@@ -8,7 +10,12 @@ namespace BankApplication
 {
     class Program
     {
-        private static readonly IAccountStorage AccountStorage = new SimpleAccountStorage();
+        private static readonly List<Bank> StartBanks = new List<Bank>
+        {
+            new Bank("ЮнитБанк")
+        };
+        
+        private static readonly IAccountStorage AccountStorage = new SimpleAccountStorage(StartBanks);
         private static readonly OpenBankAccountUseCase OpenBankAccountUseCase = new OpenBankAccountUseCase(AccountStorage);
         private static readonly CloseBankAccountUseCase CloseBankAccountUseCase = new CloseBankAccountUseCase(AccountStorage);
         private static readonly BankPutUseCase BankPutUseCase = new BankPutUseCase(AccountStorage);
@@ -16,7 +23,8 @@ namespace BankApplication
         
         static void Main(string[] args)
         {
-            var bank = new Bank("ЮнитБанк");
+            var bank = StartBanks.First();
+            
             var alive = true;
             while (alive)
             {
@@ -50,7 +58,6 @@ namespace BankApplication
                         case 6:
                             alive = false;
                             continue;
-
                     }
                 }
                 catch(Exception ex)
@@ -76,6 +83,7 @@ namespace BankApplication
                 var accountType = type == 2 ? AccountType.Deposit : AccountType.Ordinary;
 
                 OpenBankAccountUseCase.Open(
+                    bank,
                     accountType, 
                     sum, 
                     AddSumHandler, 
@@ -94,7 +102,7 @@ namespace BankApplication
                 Console.WriteLine("Введите Id счета: ");
                 var id = Convert.ToInt32(Console.ReadLine());
 
-                BankWithdrawCase.Withdraw(sum, id);
+                BankWithdrawCase.Withdraw(bank, sum, id);
             }
 
             static void Put(Bank bank)
@@ -105,7 +113,7 @@ namespace BankApplication
                 Console.WriteLine("Укажите Id счета: ");
                 var id = Convert.ToInt32(Console.ReadLine());
 
-                BankPutUseCase.Put(sum, id);
+                BankPutUseCase.Put(bank, sum, id);
             }
 
             static void CloseAccount(Bank bank)
@@ -113,7 +121,7 @@ namespace BankApplication
                 Console.WriteLine("Укажите Id счета, который хотите закрыть: ");
                 var id = Convert.ToInt32(Console.ReadLine());
 
-                CloseBankAccountUseCase.Close(id);
+                CloseBankAccountUseCase.Close(bank, id);
             }
 
             #region Обработчики событий
